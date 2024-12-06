@@ -1,4 +1,3 @@
-
 const INPUT: &str = include_str!("./input/day_2.txt");
 
 pub fn day_2() {
@@ -7,7 +6,8 @@ pub fn day_2() {
     let reports = INPUT
         .trim()
         .lines()
-        .map(|line| { // convert each line to a vec of integers, splitting by whitespace
+        .map(|line| {
+            // convert each line to a vec of integers, splitting by whitespace
             line.split_whitespace()
                 .filter_map(|s| s.parse::<i32>().ok())
                 .collect::<Vec<_>>()
@@ -15,9 +15,7 @@ pub fn day_2() {
         .collect::<Vec<_>>();
 
     let is_safe = |report: &Vec<i32>| {
-        let diffs = report.iter()
-            .zip(report.iter().skip(1))
-            .map(|(a, b)| a - b);
+        let diffs = report.iter().zip(report.iter().skip(1)).map(|(a, b)| a - b);
 
         let is_monotonic = diffs.clone().all(|d| d <= 0) || diffs.clone().all(|d| d >= 0);
         let is_within_range = diffs.clone().all(|d| d.abs() >= 1 && d.abs() <= 3);
@@ -25,10 +23,7 @@ pub fn day_2() {
         is_monotonic && is_within_range
     };
 
-    let safe_reports = reports
-        .iter()
-        .filter(|report| is_safe(report))
-        .count();
+    let safe_reports = reports.iter().filter(|report| is_safe(report)).count();
 
     println!("safe reports: {safe_reports}");
 
@@ -36,7 +31,8 @@ pub fn day_2() {
         .iter()
         .filter(|report| !is_safe(report))
         .filter(|report| {
-            report.iter()
+            report
+                .iter()
                 .enumerate()
                 .map(|(i, _)| {
                     let mut modified = (*report).clone();

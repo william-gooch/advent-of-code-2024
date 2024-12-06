@@ -11,7 +11,10 @@ enum TileState {
 
 #[derive(PartialEq, Eq, Hash, Clone)]
 enum Direction {
-    Up, Down, Left, Right,
+    Up,
+    Down,
+    Left,
+    Right,
 }
 
 impl Direction {
@@ -34,7 +37,7 @@ impl TryFrom<char> for Direction {
             'v' => Ok(Direction::Down),
             '>' => Ok(Direction::Left),
             '<' => Ok(Direction::Right),
-            _ => Err("Invalid direction")
+            _ => Err("Invalid direction"),
         }
     }
 }
@@ -55,19 +58,23 @@ impl GuardPosition {
         }
     }
 
-    fn move_guard(&mut self, map: &Vec<Vec<TileState>>) -> bool {
+    fn move_guard(&mut self, map: &[Vec<TileState>]) -> bool {
         let (next_row, next_col) = self.next_position();
 
-        if next_row < 0 || next_col < 0 || next_row >= map.len() as isize || next_col >= map.first().unwrap().len() as isize {
+        if next_row < 0
+            || next_col < 0
+            || next_row >= map.len() as isize
+            || next_col >= map.first().unwrap().len() as isize
+        {
             true
         } else {
             match map[next_row as usize][next_col as usize] {
                 TileState::Wall => {
                     self.dir.turn_right();
-                },
+                }
                 TileState::Empty | TileState::Visited => {
                     self.pos = (next_row, next_col);
-                },
+                }
             }
             false
         }
@@ -78,7 +85,8 @@ pub fn day_6() {
     println!("--- Day 6 ---");
 
     let mut guard_pos: Option<GuardPosition> = None;
-    let map = INPUT.lines()
+    let map = INPUT
+        .lines()
         .enumerate()
         .map(|(row, l)| {
             l.chars()
@@ -88,11 +96,13 @@ pub fn day_6() {
                         '.' => Ok(TileState::Empty),
                         '#' => Ok(TileState::Wall),
                         _ => {
-                            let dir = c.try_into()
-                                .map_err(|_| "Invalid tile type")?;
-                            guard_pos = Some(GuardPosition { pos: (row as isize, col as isize), dir });
+                            let dir = c.try_into().map_err(|_| "Invalid tile type")?;
+                            guard_pos = Some(GuardPosition {
+                                pos: (row as isize, col as isize),
+                                dir,
+                            });
                             Ok(TileState::Visited)
-                        },
+                        }
                     }
                 })
                 .collect::<Result<Vec<_>, _>>()
@@ -119,12 +129,14 @@ pub fn day_6() {
     {
         let rows = map.len();
         let cols = map.first().unwrap().len();
-        
+
         let possible_obstructions = (0..rows)
             .map(|row| {
                 (0..cols)
                     .filter(|&col| {
-                        if map[row][col] == TileState::Wall { return false; }
+                        if map[row][col] == TileState::Wall {
+                            return false;
+                        }
 
                         let mut positions: HashSet<GuardPosition> = HashSet::new();
                         let mut map = map.clone();
