@@ -1,4 +1,5 @@
 #![feature(iterator_try_collect)]
+#![feature(iter_collect_into)]
 #![allow(unused)]
 
 // mod day_1;
@@ -11,7 +12,8 @@
 // mod day_8;
 // mod day_9;
 // mod day_10;
-mod day_11;
+// mod day_11;
+mod day_12;
 
 fn main() {
     // day_1::day_1();
@@ -24,5 +26,6 @@ fn main() {
     // day_8::day_8();
     // day_9::day_9();
     // day_10::day_10();
-    day_11::day_11();
+    // day_11::day_11();
+    day_12::day_12();
 }
