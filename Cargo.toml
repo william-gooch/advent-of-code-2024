@@ -8,5 +8,6 @@ edition = "2021"
 [dependencies]
 elsa = "1.10.0"
 itertools = "0.13.0"
+nalgebra = "0.33.2"
 ndarray = "0.16.1"
 regex = "1.11.1"
