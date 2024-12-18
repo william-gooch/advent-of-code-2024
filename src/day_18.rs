@@ -1,11 +1,12 @@
-use std::collections::{BinaryHeap, HashMap};
+use fxhash::FxHashMap as HashMap;
+use std::collections::BinaryHeap;
 
 use itertools::Itertools;
 use ndarray::{Array2, Axis, Ix2};
 
 const INPUT: &str = include_str!("./input/day_18.txt");
 
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 struct State {
     cost: u64,
     heuristic: u64,
@@ -25,8 +26,8 @@ impl PartialOrd for State {
 }
 
 impl State {
-    fn possible_next_states(&self, map: &Array2<bool>) -> Vec<State> {
-        vec![
+    fn possible_next_states(self, map: &Array2<bool>) -> impl Iterator<Item = State> + use<'_> {
+        [
             Ix2(self.position[0] + 1, self.position[1]),
             Ix2(self.position[0].wrapping_sub(1), self.position[1]),
             Ix2(self.position[0], self.position[1] + 1),
@@ -37,19 +38,18 @@ impl State {
                 position[1] < map.len_of(Axis(1)) &&
                 !map[*position]
             })
-            .map(|position| {
+            .map(move |position| {
                 State {
                     position,
                     cost: self.cost + 1,
                     heuristic: (71 - position[0] as u64) + (71 - position[1] as u64)
                 }
             })
-            .collect::<Vec<_>>()
     }
 }
 
 fn min_score(map: &Array2<bool>) -> Option<u64> {
-    let mut lowest_score: HashMap<Ix2, u64> = HashMap::new();
+    let mut lowest_score: HashMap<Ix2, u64> = HashMap::default();
     let mut p_queue = BinaryHeap::new();
     p_queue.push(State { cost: 0, position: Ix2(0, 0), heuristic: 71 + 71 });
 
@@ -63,14 +63,12 @@ fn min_score(map: &Array2<bool>) -> Option<u64> {
         else { *lowest = state.cost; }
 
         state.possible_next_states(map)
-            .into_iter()
             .for_each(|next| {
                 let lowest = lowest_score.entry(next.position).or_insert(u64::MAX);
                 if next.cost <= *lowest {
                     p_queue.push(next.clone());
-                    // *lowest = next.cost;
                 }
-            })
+            });
     }
 
     None
@@ -81,35 +79,50 @@ pub fn day_18() {
 
     let map: Array2<bool> = Array2::default((71, 71));
 
+    let positions = INPUT.lines()
+        .map(|l| {
+            let mut split = l.split(',');
+            let (x, y) = l.split(',').take(2).map(|s| s.parse::<usize>().unwrap()).collect_tuple().unwrap();
+            Ix2(y, x)
+        })
+        .collect::<Vec<_>>();
+
     {
         let mut map = map.clone();    
 
-        INPUT.lines()
+        positions
+            .iter()
             .take(1024)
-            .for_each(|l| {
-                let mut split = l.split(',');
-                let (x, y) = l.split(',').take(2).map(|s| s.parse::<usize>().unwrap()).collect_tuple().unwrap();
-                map[(y, x)] = true;
+            .for_each(|&pos| {
+                map[pos] = true;
             });
 
         let min_score = min_score(&map);
         println!("Minimum distance: {min_score:?}");
     }
 
+    let start = std::time::Instant::now();
     {
-        let mut map = map.clone();
+        let is_passable = |steps: usize| {
+            let mut map = map.clone();
 
-        let first_impassable_byte = INPUT.lines()
-            .map(|l| {
-                let mut split = l.split(',');
-                let (x, y) = l.split(',').take(2).map(|s| s.parse::<usize>().unwrap()).collect_tuple().unwrap();
-                map[(y, x)] = true;
+            positions.iter()
+                .take(steps)
+                .for_each(|&pos| {
+                    map[pos] = true;
+                });
+            
+            min_score(&map).is_some()
+        };
 
-                ((x, y), min_score(&map))
-            })
-            .skip_while(|(pos, score)| score.is_some())
-            .next().unwrap().0;
+        let steps = (0..positions.len()).collect::<Vec<_>>();
+        let partition_point = steps.partition_point(|&steps| is_passable(steps));
 
-        println!("First byte to block off path: {first_impassable_byte:?}");
+        let first_impassable = positions[partition_point - 1];
+        let first_impassable = (first_impassable[1], first_impassable[0]);
+
+        println!("First byte to block off path: {:?}", first_impassable);
     }
+    let elapsed = start.elapsed();
+    println!("Took {elapsed:?}");
 }
