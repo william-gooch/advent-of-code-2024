@@ -6,6 +6,7 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+derive_more = { version = "1.0.0", features = ["debug"] }
 elsa = "1.10.0"
 fxhash = "0.2.1"
 itertools = "0.13.0"
