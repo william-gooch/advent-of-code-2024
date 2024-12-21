@@ -1,5 +1,7 @@
+#![recursion_limit = "256"]
 #![feature(iterator_try_collect)]
 #![feature(iter_collect_into)]
+#![feature(unsigned_signed_diff)]
 #![allow(unused)]
 
 // mod day_1;
@@ -21,7 +23,8 @@
 // mod day_17;
 // mod day_18;
 // mod day_19;
-mod day_20;
+// mod day_20;
+mod day_21;
 
 fn main() {
     // day_1::day_1();
@@ -43,5 +46,6 @@ fn main() {
     // day_17::day_17();
     // day_18::day_18();
     // day_19::day_19();
-    day_20::day_20();
+    // day_20::day_20();
+    day_21::day_21();
 }
