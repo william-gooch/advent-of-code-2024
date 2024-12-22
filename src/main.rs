@@ -1,6 +1,7 @@
 #![recursion_limit = "256"]
 #![feature(iterator_try_collect)]
 #![feature(iter_collect_into)]
+#![feature(iter_map_windows)]
 #![feature(unsigned_signed_diff)]
 #![allow(unused)]
 
