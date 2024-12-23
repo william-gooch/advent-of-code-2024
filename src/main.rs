@@ -2,6 +2,7 @@
 #![feature(iterator_try_collect)]
 #![feature(iter_collect_into)]
 #![feature(iter_map_windows)]
+#![feature(iter_next_chunk)]
 #![feature(unsigned_signed_diff)]
 #![allow(unused)]
 
@@ -26,7 +27,8 @@
 // mod day_19;
 // mod day_20;
 // mod day_21;
-mod day_22;
+// mod day_22;
+mod day_23;
 
 fn main() {
     // day_1::day_1();
@@ -50,5 +52,6 @@ fn main() {
     // day_19::day_19();
     // day_20::day_20();
     // day_21::day_21();
-    day_22::day_22();
+    // day_22::day_22();
+    day_23::day_23();
 }
