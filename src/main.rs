@@ -3,6 +3,8 @@
 #![feature(iter_collect_into)]
 #![feature(iter_map_windows)]
 #![feature(iter_next_chunk)]
+#![feature(iter_array_chunks)]
+#![feature(str_as_str)]
 #![feature(unsigned_signed_diff)]
 #![allow(unused)]
 
@@ -28,7 +30,9 @@
 // mod day_20;
 // mod day_21;
 // mod day_22;
-mod day_23;
+// mod day_23;
+// mod day_24;
+mod day_25;
 
 fn main() {
     // day_1::day_1();
@@ -53,5 +57,7 @@ fn main() {
     // day_20::day_20();
     // day_21::day_21();
     // day_22::day_22();
-    day_23::day_23();
+    // day_23::day_23();
+    // day_24::day_24();
+    day_25::day_25();
 }
